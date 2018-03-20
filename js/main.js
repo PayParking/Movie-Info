@@ -1,7 +1,11 @@
 $(document).ready(function() {
   $('#searchForm').on('submit', function(e){
     let searchText = $('#searchText').val();
-    getMovies(searchText);
+    if(searchText=="") {
+      alert("Must provide movie title");
+    } else {
+      getMovies(searchText);
+    }
     e.preventDefault();
   });
 });
@@ -12,19 +16,26 @@ function getMovies(searchText) {
       $('#movies').html('');
       console.log(response);
       let movies = response.data.Search;
-      let output = "";
-      $.each(movies,function(index, movie) {
-        output += '\
-        <div class="col-md-3">\
-          <div class="well text-center">\
-            <img src="' + movie.Poster + '">\
-            <h5>' + movie.Title + '</h5>\
-            <a onclick="movieDetails(\'' + movie.imdbID + '\')" class="btn btn-primary" href="#">Movie Detail</a>\
-          </div>\
-        </div>';
-        
-      })
-      $('#movies').html(output);    
+      if(movies==null) {
+        alert("Must provide valid movie title");
+      } else {
+        let output = "";
+        $.each(movies,function(index, movie) {
+          output += '\
+          <div class="col-md-3">\
+            <div class="well text-center">\
+              <img src="' + movie.Poster + '">\
+              <h5>' + movie.Title + '</h5>\
+              <a onclick="movieDetails(\'' + movie.imdbID + '\')" class="btn btn-primary" href="#">Movie Detail</a>\
+            </div>\
+          </div>';
+          
+        })
+        $('#movies').html(output); 
+      }   
+    })
+    .catch(function(err) {
+      alert("Such movie doesn't exist");
     })
 }
 
